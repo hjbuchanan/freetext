@@ -1,4 +1,8 @@
 require 'httparty'
+require 'excon'
+require 'vacuum'
+require 'a2z'
+
 
 class BooksController < ApplicationController
   before_action :set_book, only: [:show, :edit, :update, :destroy]
@@ -16,12 +20,57 @@ class BooksController < ApplicationController
 
   # GET /books/new
   def new
-    @book = Book.new
-    def get_book_info
-      @response = HTTPpart.get('http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&Operation=ItemLookup&SubscriptionId=AKIAI6MPLS2WWOQTVEIQ&AssociateTag=286193100284&Version=2011-08-01&ItemId=9788478888566&IdType=ISBN&SearchIndex=Books&Condition=All&ResponseGroup=Images,ItemAttributes,Offers')
-      data = @response.parsed_response
-      puts data['title']
+    # @book = Book.new
+    client = A2z::Client.new(key: 'AKIAI6MPLS2WWOQTVEIQ', secret: 'FWoxytU5eFfP2vJwidj8s0gLJz5oF4IQCppAPfG', tag: '286193100284')
+
+    response = client.item_lookup do
+      category 'Books'
+      id '9780590353403'
+      id_type 'ISBN'
     end
+    return response
+    # req = Vacuum.new
+
+    # req.configure (
+    # {aws_access_key_id:'AKIAI6MPLS2WWOQTVEIQ',
+    # aws_secret_access_key:'FWoxytU5eFfP2vJwidj8s0gLJz5oF4IQCppAPfG',
+    # associate_tag:'286193100284' }
+    # )
+
+
+    # params = {
+    #   'SearchIndex' => 'Books',
+    #   'Keywords'    => 'Architecture',
+    # }
+
+    # res = req.item_search(query: params)
+
+    # req.build operation:    'ItemSearch',
+    #   search_index: 'Books',
+    #   keywords:     'Deleuze'
+
+    # res = req.get
+
+    # params = {
+    #   'SearchIndex' => 'Books',
+    #   'Keywords'    => 'Architecture'
+    # }
+
+    # res = req.item_lookup(query: params)
+    # params = {
+    #   'SearchIndex' => 'Books',
+    #   'IdType'    => 'ISBN',
+    #   'ItemID'    => '9780590353403'
+    # }
+    # #403 error, request forbidden. something about my params?
+    # res = req.item_lookup(query: params)
+    # puts res
+    # want to query the api with the given isbn, take that the first set of information from the query and create a new country
+
+      # response = HTTParty.get('http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&Operation=ItemLookup&SubscriptionId=AKIAI6MPLS2WWOQTVEIQ&AssociateTag=286193100284&Version=2011-08-01&ItemId=9788478888566&IdType=ISBN&SearchIndex=Books&Condition=All&ResponseGroup=Images,ItemAttributes,Offers')
+      # @data_returned = response.parsed_response
+
+
 
   end
 
@@ -29,11 +78,11 @@ class BooksController < ApplicationController
   def edit
   end
 
-  def get_book_info
-    @response = HTTPpart.get('http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&Operation=ItemLookup&SubscriptionId=AKIAI6MPLS2WWOQTVEIQ&AssociateTag=286193100284&Version=2011-08-01&ItemId=9788478888566&IdType=ISBN&SearchIndex=Books&Condition=All&ResponseGroup=Images,ItemAttributes,Offers')
-    data = @response.parsed_response
-    puts data['title']
-  end
+  # def get_book_info
+  #   @response = HTTPpart.get('http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&Operation=ItemLookup&SubscriptionId=AKIAI6MPLS2WWOQTVEIQ&AssociateTag=286193100284&Version=2011-08-01&ItemId=9788478888566&IdType=ISBN&SearchIndex=Books&Condition=All&ResponseGroup=Images,ItemAttributes,Offers')
+  #   data = @response.parsed_response
+  #   puts data['title']
+  # end
 
 
   # POST /books

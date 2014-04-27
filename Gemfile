@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+  source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
@@ -27,6 +27,10 @@ gem 'turbolinks'
 gem 'multi_xml'
 
 gem 'httparty'
+
+gem 'vacuum'
+
+gem 'a2z'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
