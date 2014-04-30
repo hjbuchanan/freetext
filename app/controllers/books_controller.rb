@@ -1,6 +1,7 @@
 require 'httparty'
 require 'excon'
 require 'vacuum'
+require 'amazon/ecs'
 require 'a2z'
 
 
@@ -20,59 +21,64 @@ class BooksController < ApplicationController
 
   # GET /books/new
   def new
-    # @book = Book.new
-    client = A2z::Client.new(key: 'AKIAI6MPLS2WWOQTVEIQ', secret: 'FWoxytU5eFfP2vJwidj8s0gLJz5oF4IQCppAPfG', tag: '286193100284')
+    @book = Book.new
+    # Amazon::Ecs.options = {
+    #     :associate_tag => '427806390514',
+    #     :AWS_access_key_id => 'AKIAI4CA4E7EODE7CRWA',
+    #     :AWS_secret_key => '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'
+    #   }
+    #   # res = Amazon::Ecs.item_lookup('9780521153348', :response_group => 'ItemAttributes', :id_type => 'ISBN', :search_index => 'Books')
+    #   #   res.each do |item|
+    #   #     item_attributes = item.get_element('ItemAttributes')
+    #   #     item_attributes.get('Title')
+    #   #   end
+    #   # @isbn = params[:book][:isbn]
+    #   @book[:ISBN]
+    #   @isbnn = @book[:ISBN]
+    #   search_term = params[:search] || "#{@isbn}"
+    #   @res  = Amazon::Ecs.item_lookup(search_term,  { :search_index => 'Books', :id_type => "ISBN", :response_group => "ItemAttributes"})
+    #   @imgs = Amazon::Ecs.item_lookup(search_term,  { :search_index => 'Books', :id_type => "ISBN", :response_group => 'Images',
+    #                                                   :search_index => 'Books',
+    #                                                   :sort => 'relevancerank' })
 
-    response = client.item_lookup do
-      category 'Books'
-      id '9780590353403'
-      id_type 'ISBN'
-    end
-    return response
-    # req = Vacuum.new
-
-    # req.configure (
-    # {aws_access_key_id:'AKIAI6MPLS2WWOQTVEIQ',
-    # aws_secret_access_key:'FWoxytU5eFfP2vJwidj8s0gLJz5oF4IQCppAPfG',
-    # associate_tag:'286193100284' }
-    # )
-
-
-    # params = {
-    #   'SearchIndex' => 'Books',
-    #   'Keywords'    => 'Architecture',
-    # }
-
-    # res = req.item_search(query: params)
-
-    # req.build operation:    'ItemSearch',
-    #   search_index: 'Books',
-    #   keywords:     'Deleuze'
-
-    # res = req.get
-
-    # params = {
-    #   'SearchIndex' => 'Books',
-    #   'Keywords'    => 'Architecture'
-    # }
-
-    # res = req.item_lookup(query: params)
-    # params = {
-    #   'SearchIndex' => 'Books',
-    #   'IdType'    => 'ISBN',
-    #   'ItemID'    => '9780590353403'
-    # }
-    # #403 error, request forbidden. something about my params?
-    # res = req.item_lookup(query: params)
-    # puts res
-    # want to query the api with the given isbn, take that the first set of information from the query and create a new country
-
-      # response = HTTParty.get('http://webservices.amazon.com/onca/xml?Service=AWSECommerceService&Operation=ItemLookup&SubscriptionId=AKIAI6MPLS2WWOQTVEIQ&AssociateTag=286193100284&Version=2011-08-01&ItemId=9788478888566&IdType=ISBN&SearchIndex=Books&Condition=All&ResponseGroup=Images,ItemAttributes,Offers')
-      # @data_returned = response.parsed_response
-
+    #   # need to save author, title, publisher of first returned item
+    #   @new_book = @res.items.first
+    #     @book.title = @res.items.first.get_element('ItemAttributes').get('Title')
+    #     @book.author = @res.items.first.get_element('ItemAttributes').get('Author')
+    #     @book.publisher = @res.items.first.get_element('ItemAttributes').get('Publisher')
+    #     @book.save
 
 
   end
+
+  # def lookup
+  #    Amazon::Ecs.options = {
+  #       :associate_tag => '427806390514',
+  #       :AWS_access_key_id => 'AKIAI4CA4E7EODE7CRWA',
+  #       :AWS_secret_key => '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'
+  #     }
+  #     # res = Amazon::Ecs.item_lookup('9780521153348', :response_group => 'ItemAttributes', :id_type => 'ISBN', :search_index => 'Books')
+  #     #   res.each do |item|
+  #     #     item_attributes = item.get_element('ItemAttributes')
+  #     #     item_attributes.get('Title')
+  #     #   end
+  #     # @isbn = params[:book][:isbn]
+  #     @book[:ISBN]
+  #     @isbn = @book[:ISBN]
+  #     search_term = params[:search] || "#{@isbn}"
+  #     @res  = Amazon::Ecs.item_lookup(search_term,  { :search_index => 'Books', :id_type => "ISBN", :response_group => "ItemAttributes"})
+  #     @imgs = Amazon::Ecs.item_lookup(search_term,  { :search_index => 'Books', :id_type => "ISBN", :response_group => 'Images',
+  #                                                     :search_index => 'Books',
+  #                                                     :sort => 'relevancerank' })
+
+  #     # need to save author, title, publisher of first returned item
+  #     @new_book = @res.items.first
+  #       @book.title = @res.items.first.get_element('ItemAttributes').get('Title')
+  #       @book.author = @res.items.first.get_element('ItemAttributes').get('Author')
+  #       @book.publisher = @res.items.first.get_element('ItemAttributes').get('Publisher')
+  #       @book.save
+  # end
+
 
   # GET /books/1/edit
   def edit
@@ -88,17 +94,40 @@ class BooksController < ApplicationController
   # POST /books
   # POST /books.json
   def create
-    @book = Book.new(book_params)
+    # @book = Book.new(book_params)
 
-    respond_to do |format|
-      if @book.save
-        format.html { redirect_to @book, notice: 'Book was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @book }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @book.errors, status: :unprocessable_entity }
-      end
-    end
+    # respond_to do |format|
+    #   if @book.save
+    #     format.html { redirect_to @book, notice: 'Book was successfully created.' }
+    #     format.json { render action: 'show', status: :created, location: @book }
+    #   else
+    #     format.html { render action: 'new' }
+    #     format.json { render json: @book.errors, status: :unprocessable_entity }
+    #   end
+    # end
+    Amazon::Ecs.options = {
+        :associate_tag => '427806390514',
+        :AWS_access_key_id => 'AKIAI4CA4E7EODE7CRWA',
+        :AWS_secret_key => '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'
+      }
+
+
+      @isbn = params[:book][:ISBN]
+      search_term = params[:search] || "#{@isbn}"
+      @res  = Amazon::Ecs.item_lookup(search_term,  { :search_index => 'Books', :id_type => "ISBN", :response_group => "ItemAttributes"})
+      @imgs = Amazon::Ecs.item_lookup(search_term,  { :search_index => 'Books', :id_type => "ISBN", :response_group => 'Images',
+                                                      :search_index => 'Books',
+                                                      :sort => 'relevancerank' })
+      # puts @res.items
+      # need to save author, title, publisher of first returned item
+      @new_book = @res.items.first
+      @book = Book.new
+        @book.title = @res.items.first.get_element('ItemAttributes').get('Title')
+        @book.author = @res.items.first.get_element('ItemAttributes').get('Author')
+        @book.publisher = @res.items.first.get_element('ItemAttributes').get('Publisher')
+        @book.save
+
+
   end
 
   # PATCH/PUT /books/1

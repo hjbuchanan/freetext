@@ -30,7 +30,13 @@ gem 'httparty'
 
 gem 'vacuum'
 
+gem 'simple_form'
+
 gem 'a2z'
+
+gem 'amazon-ecs'
+
+gem 'twitter-bootstrap-rails'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
