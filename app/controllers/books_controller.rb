@@ -118,13 +118,14 @@ class BooksController < ApplicationController
       @imgs = Amazon::Ecs.item_lookup(search_term,  { :search_index => 'Books', :id_type => "ISBN", :response_group => 'Images',
                                                       :search_index => 'Books',
                                                       :sort => 'relevancerank' })
-      # puts @res.items
+       puts @imgs.items.first.get_element('MediumImage').get('URL')
       # need to save author, title, publisher of first returned item
       @new_book = @res.items.first
       @book = Book.new
         @book.title = @res.items.first.get_element('ItemAttributes').get('Title')
         @book.author = @res.items.first.get_element('ItemAttributes').get('Author')
         @book.publisher = @res.items.first.get_element('ItemAttributes').get('Publisher')
+        @book.url = @imgs.items.first.get_element('MediumImage').get('URL')
         @book.save
 
 

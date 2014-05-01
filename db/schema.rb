@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415105322) do
+ActiveRecord::Schema.define(version: 20140430102155) do
 
   create_table "books", force: true do |t|
     t.string   "author"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20140415105322) do
     t.string   "publisher"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "url"
   end
 
 end

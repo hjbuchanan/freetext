@@ -11,3 +11,27 @@
  *= require_self
  *= require_tree .
  */
+h1 {
+  font: helvetica;
+}
+.book_cover {
+  float: left;
+  margin-right: 20px;
+  margin-left: 20px;
+  clear: both;
+}
+
+.book_attrs {
+  float: left;
+  margin-top: 10px;
+}
+
+.book_info {
+  margin-top: 20px;
+  float: left;
+  clear: both;
+}
+
+#new_book_form {
+  margin-left: 20px;
+}

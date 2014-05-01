@@ -1,8 +1,7 @@
 
-
+<div id="new_book_form">
    <%= simple_form_for @book, :url => 'books' , :method => 'post', :remote => true do |f| %>
-      <%= f.label :search %>
       <%= f.input_field :ISBN %>
-      <%= f.button :submit %>
-
+      <%= f.submit :onclick => "return confirm ('Searching for Book Now!')" %>
    <% end %>
+</div>
